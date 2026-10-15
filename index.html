@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LinguaFlow AI - Platform Belajar Bahasa Foreign Berbasis AI</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f0fe',
+                            100: '#e1e0fc',
+                            200: '#c5c3fa',
+                            500: '#5B4BDB',
+                            600: '#4a3bc7',
+                            700: '#3c2ea8',
+                        },
+                        tealAccent: {
+                            400: '#34d399',
+                            500: '#20BFA9',
+                            600: '#179b88',
+                        },
+                        surfaceBg: '#F8FAFF',
+                        darkText: '#1F2937'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@400;600&family=Noto+Sans+JP:wght@400;600&family=Noto+Sans+SC:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans KR', 'Noto Sans JP', 'Noto Sans SC', sans-serif;
+            background-color: #F8FAFF;
+            color: #1F2937;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F8FAFF;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .transform-style-3d {
+            transform-style: preserve-3d;
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+
+        .nav-item-active {
+            background-color: #5B4BDB;
+            color: #ffffff !important;
+            box-shadow: 0 4px 12px rgba(91, 75, 219, 0.25);
+        }
+
+        .mobile-nav-item-active {
+            color: #5B4BDB !important;
+            font-weight: 700;
+        }
+        .mobile-nav-item-active i {
+            transform: translateY(-2px);
+            color: #5B4BDB !important;
+        }
+
+        input, select, textarea {
+            font-size: 16px !important;
+        }
+
+        .pb-safe {
+            padding-bottom: max(12px, env(safe-area-inset-bottom));
+        }
+    </style>
+</head>
+<body class="bg-surfaceBg text-darkText min-h-screen flex flex-col md:flex-row antialiased overflow-x-hidden select-none">
+
+    <!-- DESKTOP SIDEBAR -->
+    <aside id="desktop-sidebar" class="hidden md:flex flex-col w-64 bg-white border-r border-slate-200/80 fixed h-full z-30 transition-all duration-300">
+        <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="App.router.navigate('dashboard')">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-500 to-tealAccent-500 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
+                    <i class="fa-solid fa-language text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-lg text-slate-800 tracking-tight leading-none">LinguaFlow<span class="text-brand-500">.ai</span></h1>
+                    <span class="text-[10px] font-semibold tracking-wider text-tealAccent-600 uppercase">SaaS Learning</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="px-4 py-3 mx-4 my-3 bg-slate-50 border border-slate-200/60 rounded-xl flex items-center justify-between cursor-pointer hover:bg-brand-50 transition-colors" onclick="UI.openLanguageSelector()">
+            <div class="flex items-center space-x-2.5 overflow-hidden">
+                <span id="sidebar-lang-flag" class="text-xl">🇰🇷</span>
+                <div class="truncate">
+                    <p class="text-[10px] text-slate-400 font-medium leading-none">Bahasa Aktif</p>
+                    <p id="sidebar-lang-name" class="text-xs font-bold text-slate-800 truncate">Bahasa Korea</p>
+                </div>
+            </div>
+            <i class="fa-solid fa-chevron-down text-xs text-slate-400"></i>
+        </div>
+
+        <nav class="flex-1 px-3 space-y-1 overflow-y-auto py-1">
+            <button onclick="App.router.navigate('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-slate-600 font-medium hover:bg-slate-100 transition">
+                <i class="fa-solid fa-house w-5 text-center text-base"></i>
+                <span class="text-xs font-semibold">Dashboard</span>
+            </button>
+
+            <button onclick="App.router.navigate('learning-path')" id="nav-learning-path" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-slate-600 font-medium hover:bg-slate-100 transition">
+                <i class="fa-solid fa-map-location-dot w-5 text-center text-base"></i>
+                <span class="text-xs font-semibold">Jalur Belajar</span>
+            </button>
+
+            <button onclick="App.router.navigate('ai-tutor')" id="nav-ai-tutor" class="nav-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-slate-600 font-medium hover:bg-slate-100 transition">
+                <div class="flex items-center space-x-3">
+                    <i class="fa-solid fa-robot w-5 text-center text-base text-brand-500"></i>
+                    <span class="text-xs font-semibold">AI Tutor</span>
+                </div>
+                <span id="sidebar-ai-mode-badge" class="bg-tealAccent-500/10 text-tealAccent-600 text-[9px] font-bold px-2 py-0.5 rounded-full border border-tealAccent-500/20">LIVE</span>
+            </button>
+
+            <button onclick="App.router.navigate('vocabulary')" id="nav-vocabulary" class="nav-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-slate-600 font-medium hover:bg-slate-100 transition">
+                <div class="flex items-center space-x-3">
+                    <i class="fa-solid fa-book-bookmark w-5 text-center text-base"></i>
+                    <span class="text-xs font-semibold">Kosakata (SRS)</span>
+                </div>
+                <span id="badge-due-vocab" class="bg-amber-100 text-amber-700 text-[10px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
+            </button>
+
+            <button onclick="App.router.navigate('challenges')" id="nav-challenges" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-slate-600 font-medium hover:bg-slate-100 transition">
+                <i class="fa-solid fa-trophy w-5 text-center text-base text-amber-500"></i>
+                <span class="text-xs font-semibold">Misi & Gamifikasi</span>
+            </button>
+
+            <button onclick="App.router.navigate('progress')" id="nav-progress" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-slate-600 font-medium hover:bg-slate-100 transition">
+                <i class="fa-solid fa-chart-line w-5 text-center text-base"></i>
+                <span class="text-xs font-semibold">Statistik Progress</span>
+            </button>
+
+            <div class="pt-3 pb-1">
+                <p class="px-3 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Eksplorasi</p>
+            </div>
+
+            <button onclick="App.router.navigate('language-explorer')" id="nav-language-explorer" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-slate-600 font-medium hover:bg-slate-100 transition">
+                <i class="fa-solid fa-globe w-5 text-center text-base"></i>
+                <span class="text-xs font-semibold">Katalog Bahasa</span>
+            </button>
+
+            <button onclick="App.router.navigate('settings')" id="nav-settings" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-slate-600 font-medium hover:bg-slate-100 transition">
+                <i class="fa-solid fa-gear w-5 text-center text-base"></i>
+                <span class="text-xs font-semibold">Pengaturan</span>
+            </button>
+        </nav>
+
+        <div class="p-4 m-3 bg-gradient-to-br from-brand-50 to-indigo-100/60 rounded-2xl border border-brand-200/50 relative overflow-hidden">
+            <div class="relative z-10">
+                <div class="flex items-center justify-between mb-1">
+                    <span id="sidebar-plan-tag" class="text-[9px] font-extrabold uppercase px-2 py-0.5 bg-brand-500 text-white rounded-full tracking-wider">Plan Free</span>
+                    <i class="fa-solid fa-sparkles text-amber-500 text-xs"></i>
+                </div>
+                <p id="sidebar-quota-text" class="text-xs font-semibold text-slate-700 mb-2">Kuota AI: <span class="text-brand-500">10/10</span> tersisa</p>
+                <button onclick="UI.openModal('modal-subscription')" class="w-full py-2 px-3 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl shadow transition text-center active:scale-95">
+                    Upgrade ke PRO
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-1 md:ml-64 flex flex-col min-h-screen pb-24 md:pb-6">
+        <header class="bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-20 px-3.5 md:px-8 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-2.5 md:hidden">
+                <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-500 to-tealAccent-500 flex items-center justify-center text-white shadow-sm">
+                    <i class="fa-solid fa-language text-base"></i>
+                </div>
+                <span class="font-extrabold text-sm text-slate-800 tracking-tight">LinguaFlow<span class="text-brand-500">.ai</span></span>
+            </div>
+
+            <div class="hidden md:flex items-center space-x-2 text-sm text-slate-500">
+                <span id="header-view-title" class="font-bold text-slate-800">Dashboard Utama</span>
+            </div>
+
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <div class="flex items-center space-x-1 px-2.5 sm:px-3 py-1.5 bg-orange-50 border border-orange-200/60 rounded-full text-orange-600 text-xs font-bold">
+                    <i class="fa-solid fa-fire text-amber-500 text-xs sm:text-sm animate-pulse"></i>
+                    <span id="user-streak-display">1 Hari</span>
+                </div>
+
+                <div class="flex items-center space-x-1 px-2.5 sm:px-3 py-1.5 bg-indigo-50 border border-indigo-200/60 rounded-full text-brand-500 text-xs font-bold">
+                    <i class="fa-solid fa-bolt text-amber-400 text-xs sm:text-sm"></i>
+                    <span id="user-xp-display">45 XP</span>
+                </div>
+
+                <button onclick="UI.openLanguageSelector()" class="flex items-center space-x-1 px-2.5 sm:px-3 py-1.5 bg-slate-100 active:bg-slate-200 border border-slate-200 rounded-full text-xs font-semibold text-slate-700 transition active:scale-95">
+                    <span id="top-lang-flag">🇰🇷</span>
+                    <span id="top-lang-code" class="uppercase text-[11px] font-bold">KR</span>
+                    <i class="fa-solid fa-chevron-down text-[9px] text-slate-400"></i>
+                </button>
+
+                <div onclick="App.router.navigate('settings')" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center font-bold text-xs shadow cursor-pointer border-2 border-white active:scale-95">
+                    <span id="user-avatar-initials">LF</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="p-3.5 sm:p-6 md:p-8 flex-1 max-w-7xl w-full mx-auto">
+            <!-- 1. DASHBOARD VIEW -->
+            <div id="view-dashboard" class="view-panel space-y-5">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+                    <div class="lg:col-span-2 bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/80 shadow-sm flex flex-col justify-between relative overflow-hidden">
+                        <div class="flex items-start justify-between mb-3">
+                            <div>
+                                <span class="text-xs font-semibold text-brand-500 uppercase tracking-wider flex items-center gap-1.5">
+                                    <i class="fa-solid fa-compass"></i> Unit Aktif Saat Ini
+                                </span>
+                                <h3 id="dash-active-unit-title" class="text-lg sm:text-2xl font-extrabold text-slate-800 mt-1">Sapaan Dasar & Perkenalan</h3>
+                                <p id="dash-active-course-sub" class="text-slate-500 text-xs md:text-sm mt-0.5">Bahasa Korea • Pemula Level 1</p>
+                            </div>
+                            <span id="dash-active-lang-flag" class="text-3xl sm:text-4xl p-2 bg-slate-50 rounded-2xl border border-slate-100">🇰🇷</span>
+                        </div>
+
+                        <div class="my-3 sm:my-4 space-y-2">
+                            <div class="flex justify-between text-xs font-bold text-slate-600 mb-1">
+                                <span>Progress Unit Ini</span>
+                                <span id="dash-unit-percent-text">50%</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden p-0.5 border border-slate-200/50">
+                                <div id="dash-unit-progress-bar" class="bg-gradient-to-r from-brand-500 to-tealAccent-500 h-full rounded-full transition-all duration-500" style="width: 50%"></div>
+                            </div>
+                        </div>
+
+                        <div class="pt-2 flex flex-col sm:flex-row items-stretch gap-2.5">
+                            <button onclick="App.router.navigate('ai-tutor')" class="flex-1 py-3.5 px-6 bg-brand-500 active:bg-brand-600 text-white font-bold rounded-2xl shadow-md shadow-brand-500/20 transition flex items-center justify-center space-x-2 text-sm active:scale-[0.98]">
+                                <i class="fa-solid fa-comments text-xs"></i>
+                                <span>Mulai AI Tutor</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/80 shadow-sm flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <h4 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                                    <i class="fa-solid fa-bullseye text-tealAccent-500"></i> Target Harian
+                                </h4>
+                                <span id="dash-daily-target-minutes" class="text-[11px] font-bold text-tealAccent-600 bg-tealAccent-500/10 px-2.5 py-1 rounded-full">15 MNT / HARI</span>
+                            </div>
+                            <p class="text-xs text-slate-500 mb-2">Konsistensi harian mempercepat penguasaan bahasa baru.</p>
+
+                            <div class="flex items-center justify-center my-1">
+                                <div class="relative w-24 h-24 sm:w-28 sm:h-28 flex items-center justify-center">
+                                    <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                                        <path class="text-slate-100" stroke-width="3.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                        <path id="dash-ring-progress" class="text-tealAccent-500 transition-all duration-1000" stroke-dasharray="35, 100" stroke-width="3.5" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                    </svg>
+                                    <div class="absolute flex flex-col items-center">
+                                        <span id="dash-minutes-done" class="text-xl font-extrabold text-slate-800 leading-none">5</span>
+                                        <span class="text-[10px] text-slate-400 font-semibold uppercase">Menit</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. AI TUTOR VIEW -->
+            <div id="view-ai-tutor" class="view-panel hidden space-y-3">
+                <div class="bg-white p-3.5 sm:p-5 rounded-3xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-3">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-brand-500/10 text-brand-500 flex items-center justify-center text-xl sm:text-2xl font-bold flex-shrink-0">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <div class="overflow-hidden">
+                            <div class="flex items-center space-x-2">
+                                <h3 id="tutor-title-name" class="font-extrabold text-slate-800 text-base sm:text-lg truncate">LinguaBot AI</h3>
+                                <span id="tutor-live-badge" class="bg-emerald-100 text-emerald-700 text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 flex-shrink-0">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span> Live Proxy Mode
+                                </span>
+                            </div>
+                            <p id="tutor-lang-scenario-desc" class="text-[11px] sm:text-xs text-slate-500 truncate">Skenario: Perkenalan Diri • Bahasa Korea</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-2 overflow-x-auto pb-1 sm:pb-0">
+                        <select id="tutor-mode-picker" onchange="App.toggleTutorMode(this.value)" class="bg-brand-50 border border-brand-200 text-brand-700 text-xs font-bold rounded-xl px-2.5 py-2 outline-none flex-shrink-0">
+                            <option value="live">Mode Backend Proxy (Vercel API)</option>
+                            <option value="demo">Mode Demo Lokal</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm h-[calc(100vh-250px)] sm:h-[480px] flex flex-col overflow-hidden">
+                    <div id="tutor-chat-messages" class="flex-1 p-3.5 sm:p-5 overflow-y-auto space-y-3 bg-slate-50/50">
+                        <!-- Messages injected via JS -->
+                    </div>
+
+                    <div class="p-2.5 sm:p-3 bg-white border-t border-slate-200/80 flex items-center space-x-2">
+                        <input type="text" id="tutor-input-field" onkeydown="if(event.key==='Enter') App.sendTutorMessage()" placeholder="Ketik balasanmu..." class="flex-1 px-3.5 py-3 bg-slate-100 border border-slate-200/80 rounded-2xl text-sm focus:outline-none focus:bg-white focus:border-brand-500 transition">
+                        <button onclick="App.sendTutorMessage()" id="tutor-send-btn" class="w-11 h-11 bg-brand-500 active:bg-brand-600 text-white font-bold rounded-2xl flex items-center justify-center shadow transition flex-shrink-0 active:scale-95">
+                            <i class="fa-solid fa-paper-plane text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- MOBILE NAVIGATION -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200/90 z-30 px-2 pt-1.5 pb-safe flex items-center justify-around shadow-lg">
+        <button onclick="App.router.navigate('dashboard')" id="mobile-nav-dashboard" class="mobile-nav-btn flex flex-col items-center py-1 px-2 text-slate-500 font-medium text-[10px]">
+            <i class="fa-solid fa-house text-base mb-0.5"></i>
+            <span>Beranda</span>
+        </button>
+        <button onclick="App.router.navigate('ai-tutor')" id="mobile-nav-ai-tutor" class="mobile-nav-btn flex flex-col items-center py-1 px-2 text-slate-500 font-medium text-[10px]">
+            <i class="fa-solid fa-robot text-base text-brand-500 mb-0.5"></i>
+            <span>AI Tutor</span>
+        </button>
+    </nav>
+
+    <!-- APPLICATION SCRIPT -->
+    <script>
+        class AIService {
+            static async sendMessage(message, language, scenario, mode = 'live') {
+                if (mode === 'live') {
+                    try {
+                        const response = await fetch('/api/gemini-proxy', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ message, language, scenario })
+                        });
+                        if (response.ok) {
+                            const data = await response.json();
+                            return data.reply;
+                        }
+                    } catch (e) {
+                        console.warn('Proxy Backend Error, fallback ke demo.', e);
+                    }
+                }
+                return `[Demo] Terima kasih atas pesan Anda: "${message}". Silakan pastikan API Proxy berjalan di Vercel.`;
+            }
+        }
+
+        class App {
+            static state = {
+                userProfile: { activeLanguage: 'ko', aiMode: 'live' },
+                chatHistory: [{ sender: 'ai', text: '안녕하세요! Saya LinguaBot. Mari berlatih Bahasa Korea!' }]
+            };
+
+            static init() {
+                this.router = {
+                    navigate: (id) => {
+                        document.querySelectorAll('.view-panel').forEach(e => e.classList.add('hidden'));
+                        document.getElementById(`view-${id}`)?.classList.remove('hidden');
+                        if (id === 'ai-tutor') App.renderChat();
+                    }
+                };
+                this.router.navigate('dashboard');
+            }
+
+            static async sendTutorMessage() {
+                const input = document.getElementById('tutor-input-field');
+                const text = input.value.trim();
+                if (!text) return;
+
+                this.state.chatHistory.push({ sender: 'user', text });
+                input.value = '';
+                this.renderChat();
+
+                const reply = await AIService.sendMessage(text, 'ko', 'greetings', this.state.userProfile.aiMode);
+                this.state.chatHistory.push({ sender: 'ai', text: reply });
+                this.renderChat();
+            }
+
+            static renderChat() {
+                const container = document.getElementById('tutor-chat-messages');
+                container.innerHTML = this.state.chatHistory.map(m => `
+                    <div class="flex ${m.sender === 'user' ? 'justify-end' : 'justify-start'}">
+                        <div class="max-w-[85%] p-3.5 rounded-2xl text-xs font-medium ${m.sender === 'user' ? 'bg-brand-500 text-white rounded-br-none' : 'bg-white border text-slate-800 rounded-bl-none shadow-sm'}">
+                            ${m.text}
+                        </div>
+                    </div>
+                `).join('');
+                container.scrollTop = container.scrollHeight;
+            }
+
+            static toggleTutorMode(val) {
+                this.state.userProfile.aiMode = val;
+            }
+        }
+
+        window.onload = () => App.init();
+    </script>
+</body>
+</html>
